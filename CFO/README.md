@@ -1,0 +1,2 @@
+# CFO
+Experiment is split up into two files to ensure universal styling. cfo.html contains the instructions and choice processes while iat.html contains the post-experiment measures to record candidate information. cfo.html must be run before iat.html due to stored variables from cfo.html being necessary for some slides in the post experiment. 

@@ -1,0 +1,979 @@
+<!DOCTYPE HTML>
+<head>
+    <script src = 'https://unpkg.com/jspsych@7.3.3'></script>  <!--This loads the jsPsych package-->
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script> <!--This loads in the plugin that shows text on the screen-->
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.2"></script> <!--This loads in the plugin that shows images and then records a response-->
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.2"></script> <!--This loads in the plugin that preloads your images for your participant-->
+    <script src="https://unpkg.com/@jspsych/plugin-iat-image@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-iat-html@1.1.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.1.1/css/survey.css">
+    <link href="https://unpkg.com/jspsych@7.1.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <style>
+      .scaling{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      };
+    </style>
+</head>
+</html>
+
+<script>
+var jsPsych = initJsPsych({
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    });
+
+var timeline = [];
+
+
+var iat_imgs = [
+  {face:'img/IAT_img/B0jpg.jpg'},
+  {face:'img/IAT_img/B1jpg.jpg'},
+  {face:'img/IAT_img/B2jpg.jpg'},
+  {face:'img/IAT_img/B3jpg.jpg'},
+  {face:'img/IAT_img/B4jpg.jpg'},
+  {face:'img/IAT_img/B5jpg.jpg'},
+  {face:'img/IAT_img/B6jpg.jpg'},
+  {face:'img/IAT_img/B7jpg.jpg'},
+  {face:'img/IAT_img/B8jpg.jpg'},
+  {face:'img/IAT_img/B9jpg.jpg'},
+  {face:'img/IAT_img/W0jpg.jpg'},
+  {face:'img/IAT_img/W1jpg.jpg'},
+  {face:'img/IAT_img/W2jpg.jpg'},
+  {face:'img/IAT_img/W3jpg.jpg'},
+  {face:'img/IAT_img/W4jpg.jpg'},
+  {face:'img/IAT_img/W5jpg.jpg'},
+  {face:'img/IAT_img/W6jpg.jpg'},
+  {face:'img/IAT_img/W7jpg.jpg'},
+  {face:'img/IAT_img/W8jpg.jpg'},
+  {face:'img/IAT_img/W9jpg.jpg'}
+  ]
+
+  var iat_word = [
+  {combined: 'Fabulous'},
+  {combined: 'Awful'},
+  {combined: 'Fantastic'},
+  {combined: 'Disgusting'},
+  {combined: 'Great'},
+  {combined: 'Lovely'},
+  {combined: 'Foul'},
+  {combined: 'Horrible'},
+  {combined: 'Horrid'},
+  {combined: 'Nice'},
+  {combined: 'Terrific'},
+  {combined: 'Nasty'},
+  {combined: 'Superb'},
+  {combined: 'Revolting'},
+  {combined: 'Wonderful'},
+  {combined: 'Terrible'}
+  ]
+  
+  var combined_array = [
+  {combined: '<img src = img/IAT_img/B0jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B1jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B2jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B3jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B4jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B5jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B6jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B7jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B8jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/B9jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W0jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W1jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W2jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W3jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W4jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W5jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W6jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W7jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W8jpg.jpg>'},
+  {combined: '<img src = img/IAT_img/W9jpg.jpg>'},
+  {combined: 'Fabulous'},
+  {combined: 'Awful'},
+  {combined: 'Fantastic'},
+  {combined: 'Disgusting'},
+  {combined: 'Great'},
+  {combined: 'Lovely'},
+  {combined: 'Foul'},
+  {combined: 'Horrible'},
+  {combined: 'Horrid'},
+  {combined: 'Nice'},
+  {combined: 'Terrific'},
+  {combined: 'Nasty'},
+  {combined: 'Superb'},
+  {combined: 'Revolting'},
+  {combined: 'Wonderful'},
+  {combined: 'Terrible'}
+]
+
+var good_words = [
+  'Fabulous',
+  'Fantastic',
+  'Great',
+  'Lovely',
+  'Nice',
+  'Terrific',
+  'Superb',
+  'Wonderful',
+]
+
+var bad_words = [
+'Awful',
+'Disgusting',
+'Foul',
+'Horrible',
+'Horrid',
+'Nasty',
+'Revolting',
+'Terrible'
+]
+
+var stored_black_image = localStorage.getItem("black_stored");
+var stored_white_image = localStorage.getItem("white_stored");
+var stored_black_key = localStorage.getItem("black_key_stored");
+var stored_white_key = localStorage.getItem("white_key_stored");
+var stored_final_fee = localStorage.getItem("finalFee");
+
+
+
+var iat_instructions = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<h1>Instructions:</h1> <p> Place your left and right index fingers on the E and I keys. At the top of the screen are 2 categories. </p>' +
+  '<p>In the task, words and/or images appear in the middle of the screen. </p>' +
+  '<p>When the word/image belongs to the category on the left, press the E key as fast as you can. When it belongs to the category on the right, press the I key as fast as you can. </p>' +
+  '<p>If you make an error, a red X will appear. Correct errors by hitting the other key. Please try to go as fast as you can while making as few errors as possible.</p>' +
+  '<p>When you are ready, press <b>[Space]</b> to begin</p>',
+  choices: " "
+};
+
+// black (left) and white (right)
+var black_left_1 = {
+  type: jsPsychIatImage,
+  stimulus: jsPsych.timelineVariable('face'),
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('face').indexOf('B') > -1){
+      return 'left';
+    } else
+    return 'right';
+    },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['Black Americans'],
+  right_category_label: ['White Americans'],
+  response_ends_trial: true,
+}
+
+//instructions for category change to unpleasant(left) and pleasant(right)
+var instr_1 = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<p> Now the categories have changed, but the rules remain the same. </p>' +
+  '<p> Please try to go as <em> as fast as you can </em> while making as few errors as possible. Correct errors by hitting the other key </p>' +
+  '<p> When you are ready, press <b>[Space]</b> to begin </p>',
+  choices: " "
+}
+
+//unpleasant (left) and pleasant (right)
+var unpleasant_left_1 = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'right'
+      } else {
+        return 'left'
+      }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['Unpleasant'],
+  right_category_label: ['Pleasant'],
+  response_ends_trial: true
+  }
+
+  var pleasant_left_1 = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'left'
+      } else {
+        return 'right'
+      }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['Pleasant'],
+  right_category_label: ['Unpleasant'],
+  response_ends_trial: true
+  }
+
+//instructions for combined category change(black+unpleasant(left) and white+pleasant (right))
+var instr_2 = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<p> Now the four categories you saw separately will appear together. Remember, each word/image fits in only one of the four categories. The label/item colors may help you identify the appropriate category. </p>' +
+  '<p> Use the E key for the two categories on the left and the I key for the two categories on the right. </p>' +
+  '<p> Again, try to go as fast as possible without making mistakes. Correct errors by hitting the other key. Practice this combination now. </p>' +
+  '<p> When you are ready, press <b>[Space]</b> to begin </p>',
+  choices: " "
+}
+
+//combined black+unpleasant(left) and white+pleasant (right)
+var black_unpleasant_combined = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      return jsPsych.timelineVariable('combined')
+    } 
+    else if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      if (jsPsych.timelineVariable('combined').indexOf('B') > -1){
+        return 'left';
+      } else
+        return 'right';
+        }
+    else{
+      if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'right'
+      } else {
+        return 'left'
+      }
+    }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['Black Americans or Unpleasant'],
+  right_category_label: ['White Americans or Pleasant'],
+  response_ends_trial: true
+}
+
+var black_pleasant_combined = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      return jsPsych.timelineVariable('combined')
+    } 
+    else if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      if (jsPsych.timelineVariable('combined').indexOf('B') > -1){
+        return 'left';
+      } else
+        return 'right';
+        }
+    else{
+      if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'left'
+      } else {
+        return 'right'
+      }
+    }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['Black Americans or Pleasant'],
+  right_category_label: ['White Americans or Unpleasant'],
+  response_ends_trial: true
+}
+
+var white_left_1 = {
+  type: jsPsychIatImage,
+  stimulus: jsPsych.timelineVariable('face'),
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('face').indexOf('B') > -1){
+      return 'right';
+    } else
+    return 'left';
+    },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['White Americans'],
+  right_category_label: ['Black Americans'],
+  response_ends_trial: true
+}
+
+var white_unpleasant_combined = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      return jsPsych.timelineVariable('combined')
+    } 
+    else if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      if (jsPsych.timelineVariable('combined').indexOf('B') > -1){
+        return 'right';
+      } else
+        return 'left';
+        }
+    else{
+      if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'left'
+      } else {
+        return 'right'
+      }
+    }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['White Americans or Unpleasant'],
+  right_category_label: ['Black Americans or Pleasant'],
+  response_ends_trial: true
+}
+
+var white_pleasant_combined = {
+  type: jsPsychIatHtml,
+  stimulus: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      return jsPsych.timelineVariable('combined')
+    } 
+    else if(good_words.includes(jsPsych.timelineVariable('combined'))){
+      stim = '<span style="color: green; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    } else{
+      stim = '<span style="color: red; font-size: 40px">' +jsPsych.timelineVariable('combined') + '</span>';
+      return stim
+    }
+  },
+  stim_key_association: function(){
+    if (jsPsych.timelineVariable('combined').indexOf('/') > -1){
+      if (jsPsych.timelineVariable('combined').indexOf('B') > -1){
+        return 'right';
+      } else
+        return 'left';
+        }
+    else{
+      if (good_words.includes(jsPsych.timelineVariable('combined'))){
+        return 'left'
+      } else {
+        return 'right'
+      }
+    }
+  },
+  html_when_wrong: '<span style="color: red; font-size: 80px">X</span>',
+  bottom_instructions: 'Remember, if you make an error an X will appear. Please press the other button to continue if this occurs',
+  force_correct_key_press: true,
+  display_feedback: true,
+  trial_duration: 3000, //Only if display_feedback is false
+  left_category_key: 'e',
+  right_category_key: 'i',
+  left_category_label: ['White Americans or Unpleasant'],
+  right_category_label: ['Black Americans or Pleasant'],
+  response_ends_trial: true
+}
+
+var black_left_block = {
+  timeline: [black_left_1],
+  timeline_variables: iat_imgs,
+  randomize_order: true,
+  on_finish: function(){
+    jsPsych.data.addProperties(
+      {correctChoice: function(){
+        return 'black'
+      }}
+        )
+  }
+}
+
+var unpleasant_left_block = {
+  timeline: [unpleasant_left_1],
+  timeline_variables: iat_word,
+  randomize_order: true,
+}
+
+var pleasant_left_block = {
+  timeline: [pleasant_left_1],
+  timeline_variables: iat_word,
+  randomize_order: true
+}
+
+var black_unpleasant_block = {
+  timeline: [black_unpleasant_combined],
+  timeline_variables: combined_array,
+  randomize_order: true,
+}
+
+var black_pleasant_block = {
+  timeline: [black_pleasant_combined],
+  timeline_variables: combined_array,
+  randomize_order: true,
+}
+
+var white_left_block = {
+  timeline: [white_left_1],
+  timeline_variables: iat_imgs,
+  randomize_order: true,
+  }
+
+var white_unpleasant_block = {
+  timeline: [white_unpleasant_combined],
+  timeline_variables: combined_array,
+  randomize_order: true,
+}
+
+var white_pleasant_block = {
+  timeline: [white_pleasant_combined],
+  timeline_variables: combined_array,
+  randomize_order: true,
+}
+var instr_3 = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<p> The categories will now switch sides. </p>' +
+  '<p>Remember to try to go as fast as you can while making as few errors as possible. Correct errors by hitting the other key. </p>' +
+  '<p>When you are ready, please press the <b>[Space]</b> bar to begin. </p>',
+  choices: " "
+}
+
+var instr_4 = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<p> Notice the four categories have been combined again, but in a new configuration. </p>' +
+  '<p>Remember to try to go as fast as you can while making as few errors as possible. Correct errors by hitting the other key. </p>' +
+  '<p>When you are ready, please press the <b>[Space]</b> bar to begin. </p>',
+  choices: " "
+}
+
+compat_right = [
+  iat_instructions, black_left_block, instr_1, unpleasant_left_block, instr_2, black_unpleasant_block, instr_3,
+  white_left_block, instr_4, white_unpleasant_block
+]
+
+incompat_right = [
+  iat_instructions, black_left_block, instr_1, pleasant_left_block, instr_2, black_pleasant_block, instr_3, white_left_block,
+  instr_4, white_pleasant_block
+]
+
+compat_left = [
+  iat_instructions, white_left_block, instr_1, pleasant_left_block, instr_2, white_pleasant_block, instr_3, black_left_block,
+  instr_4, black_pleasant_block
+]
+
+incompat_left = [
+  iat_instructions, white_left_block, instr_1, unpleasant_left_block, instr_2, white_unpleasant_block, instr_3, 
+  black_left_block, instr_4, black_unpleasant_block
+]
+
+random_array = [
+  compat_right, incompat_right, compat_right, incompat_left
+]
+
+active_iat_block = random_array[Math.floor(Math.random() * random_array.length)]
+
+var finished_study = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function(){
+    return `<div class = "survey_prompt"><p>Thank you! You've finished the main task of the study. There are a few short measures and questionnaires left for you to complete.</p>` +
+    '<p><b> Please press the space bar to continue to the final portion of the study.</b></p></div>'
+  },
+  choices: " "
+}
+
+var pp_info = {
+  timeline: [
+
+  {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+      return `<h2><u> Demographics</u> </h2><p> Please continue when you are ready to provide demographic information</p>
+      <p><b> Please press the space bar to advance</b></p>`
+    },
+    choices: " "
+  },
+
+  {
+    type: jsPsychSurvey,
+    pages: [
+      //page 1, general info
+    [
+      {
+        type: 'text',
+        input_type: "number",
+        prompt: 'What is your age?',
+        required: true,
+        name: 'age'
+      },
+
+      {
+        type: 'text',
+        input_type: 'text',
+        prompt: 'What is your gender?',
+        required: true,
+        name: 'gender'
+      },
+
+      {
+        type: 'text',
+        input_type: 'text',
+        prompt: 'What is your occupation/major?',
+        required: true,
+        name: 'occupation'
+      },
+
+      {
+        type: 'text',
+        input_type: 'text',
+        prompt: 'What is your ethnicity?',
+        required: true,
+        name: 'ethnicity'
+      },
+
+      {
+        type: 'multi-choice',
+        prompt: 'What is the highest level of education completed?',
+        options: ['Less than High School', 'High School / GED', 'Some College', '2-year College Degree', 
+        '4-year College Degree', 'Masters Degree', 'Doctoral Degree', 'Professional Degree (JD, MD)' ],
+        required: true,
+        name: 'education'
+      },
+
+      {
+        type: 'multi-choice',
+        prompt: 'What is your combined annual household income?',
+        options: ['Less than $30,000', '$30,000 - $39,999', '$40,000 - $49,999', '$50,000 - $59,999', '$60,000 - $69,999',
+        '$70,000 - $79,999', '$80,000 - $89,999', '$90,000 - $99,999', '$100,000 or more'],
+        required: true,
+        name: 'income'
+      }
+    ],
+
+    //page 2, poli orientation
+    [
+      {
+        type: 'likert',
+        prompt: 'Where on the following political orientation would you place yourself?',
+        likert_scale_min_label: 'Extremely Liberal',
+        likert_scale_max_label: 'Extremely Conservative',
+        likert_scale_min: 1,
+        likert_scale_max: 9,
+        name: 'poli_orientation',
+        required: true
+      },
+      
+      {
+      type: 'likert',
+      prompt: 'In terms of social and cultural issues, how liberal or conservative are you?',
+      likert_scale_min_label: 'Extremely Liberal',
+      likert_scale_max_label: 'Extremely Conservative',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'poli_cultural_orientation',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'In terms of economic issues, how liberal or conservative are you?',
+      likert_scale_min_label: 'Extremely Liberal',
+      likert_scale_max_label: 'Extremely Conservative',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'poli_econ_orientation',
+      required: true
+      },
+    ],
+    ]
+  },
+
+  {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+      return `<h2><u> Questionnaire</u> </h2><p> Please continue when you are ready to complete a brief questionnaire</p>
+      <p><b> Please press the space bar to advance</b></p>`
+    },
+    choices: " "
+  },
+
+  {
+    type:jsPsychSurvey,
+    pages: [
+      //page 1, excitement for winning
+      [
+      {
+      type: 'likert',
+      prompt: 'How excited were you to win money for yourself?',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'self_excitement',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'How excited were you to win money for Person A',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'person_a_excitement',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'How excited were you to win money for Person B?',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'person_b_excitement',
+      required: true
+      }
+      ],
+      
+      //page 2, disappointment for losing
+      [
+      {
+      type: 'likert',
+      prompt: 'How disappointed were you to lose money for yourself?',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'self_disappointment',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'How disappointed were you to lose money for Person A',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'person_a_disappointment',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'How disappointed were you to lose money for yourself?',
+      likert_scale_min_label: 'Not at all',
+      likert_scale_max_label: 'Extremely',
+      likert_scale_min: 1,
+      likert_scale_max: 7,
+      name: 'person_b_disappointment',
+      required: true
+      }
+      ],
+
+      //page 3, trait scaling - A
+      [
+
+      {
+      type: 'html',
+      prompt: '<div class = scaling><p>How would you rate <b>' + 
+      stored_black_key + '</b> on a scale from...</p><img src =' + stored_black_image + '</div>'
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Reckless to Cautious',
+      likert_scale_min_label: 'Reckless',
+      likert_scale_max_label: 'Cautious',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'reckless_cautious_a',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Irresponsible to Responsible',
+      likert_scale_min_label: 'Irresponsible',
+      likert_scale_max_label: 'Responsible',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'irresponsible_responsible_a',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Careless to Careful',
+      likert_scale_min_label: 'Careless',
+      likert_scale_max_label: 'Careful',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'careless_careful_a',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Thoughtless to Thoughtful',
+      likert_scale_min_label: 'Thoughtless',
+      likert_scale_max_label: 'Thoughtful',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'thoughtless_thoughtful_a',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Inconsiderate to Considerate',
+      likert_scale_min_label: 'Inconsiderate',
+      likert_scale_max_label: 'Considerate',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'inconsiderate_considerate_a',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Imprudent to Prudent',
+      likert_scale_min_label: 'Imprudent',
+      likert_scale_max_label: 'Prudent',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'imprudent_prudent_a',
+      required: true
+      }
+      ],
+
+      //page 4, trait scaling - B
+      [
+      {
+      type: 'html',
+      prompt: '<div class = scaling><p>How would you rate <b>' + 
+      stored_white_key + '</b> on a scale from...</p><img src =' + stored_white_image + '</div>'
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Inconsiderate to Considerate',
+      likert_scale_min_label: 'Inconsiderate',
+      likert_scale_max_label: 'Considerate',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'inconsiderate_considerate_b',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Reckless to Cautious',
+      likert_scale_min_label: 'Reckless',
+      likert_scale_max_label: 'Cautious',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'reckless_cautious_b',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Imprudent to Prudent',
+      likert_scale_min_label: 'Imprudent',
+      likert_scale_max_label: 'Prudent',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'imprudent_prudent_b',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Thoughtless to Thoughtful',
+      likert_scale_min_label: 'Thoughtless',
+      likert_scale_max_label: 'Thoughtful',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'thoughtless_thoughtful_b',
+      required: true
+      },
+
+      {
+      type: 'likert',
+      prompt: 'Careless to Careful',
+      likert_scale_min_label: 'Careless',
+      likert_scale_max_label: 'Careful',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'careless_careful_b',
+      required: true
+      },
+    
+      {
+      type: 'likert',
+      prompt: 'Irresponsible to Responsible',
+      likert_scale_min_label: 'Irresponsible',
+      likert_scale_max_label: 'Responsible',
+      likert_scale_min: 1,
+      likert_scale_max: 9,
+      name: 'irresponsible_responsible_b',
+      required: true
+      }
+      ]
+    ]
+  }
+
+  ]
+}
+
+var debrief = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function(){
+    return `<p> Thank you for completing all the tasks!</p><p>This study is about how people make 
+    financial decisions for people of different races. To study this, we used slight deception: 
+    the people you saw were not actual participants in this study, and therefore will not be receiving money from the random
+    trials chosen as stated earlier. This also means that there will be no option to opt-in for a follow-up study for additional payment 
+    as the people you saw were not real participants.</p>` +
+    '<p>You will receive a final payment of <b>$' + stored_final_fee  +'</b> as per the random trial from <b>your</b> block, plus your per hour participation fee.</p>' +
+    '<br></br>' +
+    '<p><b> Please press the space bar to advance</b></p>'
+  },
+  choices: " "
+}
+
+var optional_feedback = {
+  type: jsPsychSurveyText,
+  questions: [
+    {
+      prompt: `<div class =  optional_feedback> <p> Thank you for participating in our study. 
+      If you have any feedback or concerns about the study, please let us know.</p>` +
+      '<p>Providing feedback is completely optional, and you are welcome to move forward if you prefer</p>' + 
+      '<p>Press <b>[Continue]</b> when you are ready to complete the study and earn credit on Prolific.</p></div>'
+    }
+  ]
+}
+
+
+for (i = 0; i < active_iat_block.length; i++) {
+  timeline.push(active_iat_block[i]);
+};
+
+timeline.push(pp_info, debrief, optional_feedback)
+
+jsPsych.run(timeline);
+
+
+  
+jsPsych.data.addProperties(
+  {correctChoice: function(){
+    const lastTrial = jsPsych.data.get().last(1).values()[0];
+    const stimulus = lastTrial.stimulus;
+    
+    if (stimulus.indexOf('/') > -1){
+      if (stimulus.indexOf('B') > -1){
+        return 'Black Americans';
+      } else
+        return 'White Americans';
+        }
+    else{
+      if (good_words.includes(stimulus)){
+        return 'Pleasant'
+      } else {
+        return 'Unpleasant'
+      }
+}}})
+
+jsPsych.data.addProperties(
+  {incorrectChoice: function(){
+    const lastTrial = jsPsych.data.get().last(1).values()[0];
+    const stimulus = lastTrial.stimulus;
+    
+    if (stimulus.indexOf('/') > -1){
+      if (stimulus.indexOf('B') > -1){
+        return 'White Americans';
+      } else
+        return 'Black Americans';
+        }
+    else{
+      if (good_words.includes(stimulus)){
+        return 'Pleasant'
+      } else {
+        return 'Unpleasant'
+      }
+}}})
+
+// code for later that is able to slice off the word being displayed by cutting
+// everything outside of the ><
+//  string = str.substring(
+// str.indexOf("<") + 1, 
+//        str.lastIndexOf(">"))
+//     return string
+
+
+
+</script>
